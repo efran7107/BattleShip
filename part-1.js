@@ -49,12 +49,13 @@ const launch = (loc) => {
     
     
 }
+
 const location = () => {
     let valid = false;
     let loc = readlineSync.question('Enter a location to strike ie \'A2\'');
     while (!valid) {
         loc = loc.charAt(0).toUpperCase() + loc.slice(1);
-        if (loc.length > 2 || (gameBoard.includes(loc) === false && hasPlayed.includes(loc) === false)) {
+        if (loc.length > 2 && (gameBoard.includes(loc) === false && hasPlayed.includes(loc) === false)) {
             console.log('Please enter a valid location');
             valid = false;
         }
