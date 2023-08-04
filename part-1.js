@@ -76,8 +76,8 @@ while (!gameOver) {
         case 1:
             console.log('you have already hit this target. Miss.');
             break;
-            case 2:
-                boats--;
+        case 2:
+            boats--;
             console.log(`Hit. You have sunk a battleship. ${boats} remaining.`);
             break;
         case 3:
@@ -97,7 +97,7 @@ while (!gameOver) {
             console.clear();
 
         } else {
-            console.exit();
+            process.exit();
         }
     }
 
