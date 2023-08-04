@@ -94,6 +94,7 @@ while (!gameOver) {
         if (playAgain) {
             createGame();
             gameOver = false;
+            console.clear();
 
         } else {
             console.exit();
@@ -101,5 +102,6 @@ while (!gameOver) {
     }
 
     readlineSync.keyInPause('press any key to continue...');
+    console.clear();
     
 }
