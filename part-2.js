@@ -1,6 +1,10 @@
 let input = require('readline-sync');
 
-let hasPlayed = new Set();
+let hasPlayed = new WeakSet();
+let fleet = new WeakSet();
+let boat;
+const size = input.questionInt('how big is the grid? i.e. 10 for 10 X 10: ');
+
 
 class Ships {
     constructor(name, hits, spaces){
@@ -9,11 +13,26 @@ class Ships {
         this.spaces = spaces;
     }
     shipSpaces = new Set();
-
-}
-
-class Carrier extends Ships {
-    constructor(name, hits, spaces){
+    
+    location(size) {
+        const direction = Math.floor(Math.random()*4);
+        // from the stern
+        let x = Math.floor(Math.random() * size);
+        let y = Math.floor(Math.random() * size);
+        switch(direction){
+            // up direction
+            case 0:
+                let valid = false;
+                do {
+                    // if()
+                
+                }while(!valid);
+            }
+        };
+    }
+    
+    class Carrier extends Ships {
+        constructor(name, hits, spaces){
         super(name = 'Carrier', hits = 5, spaces = 5);
     }
 }
@@ -39,15 +58,15 @@ class PatrolBoat extends Ships {
 }
 
 
-function createGrid(size) {
+let createGrid = (size) => {
     let grid = [];
     for (let i = 0; i < size; i++) {
-      grid[i] = [];
-      for (let j = 0; j < size; j++) {
+        grid[i] = [];
+        for (let j = 0; j < size; j++) {
         grid[i][j] = String.fromCharCode(65 + i) + (j + 1);
-      }
     }
-    return grid;
+}
+return grid;
 }
 
 function isValid(loc) {
@@ -63,20 +82,31 @@ function isValid(loc) {
     }
 }
 
-
-let theGrid = createGrid(10);
-const carrier = new Carrier();
-const battleship = new Battleship();
-const destroyer = new Destroyer();
-const submarine = new Submarine();
-const patrolBoat = new PatrolBoat();
-console.log(isValid('a10'));
-console.log(carrier.name);
-console.log(battleship.name);
-console.log(destroyer.name);
-console.log(submarine.name);
-console.log(patrolBoat.name);
-
-
-
-
+// switch(size){
+//     case size < 3:
+//         boat = gameBoard[Math.floor(Math.random() * size)][Math.floor(Math.random() * size)];
+//         fleet.add(boat);
+//         break;
+//         case size === 3:
+//             patrolBoat = new PatrolBoat();
+//         fleet.add(patrolBoat);
+//     case size > 3 && size < 5:
+//         patrolBoat = new PatrolBoat();
+//         submarine = new Submarine();
+//         destroyer = new Destroyer();
+//         fleet.add([patrolBoat, submarine, destroyer]);
+//         break;
+//         case size >= 5:
+//             patrolBoat = new PatrolBoat();
+//             submarine = new Submarine();
+//             destroyer = new Destroyer();
+//             battleship = new Battleship();
+//             carrier = new Carrier();
+// }
+       
+let patrolBoat = new PatrolBoat();       
+const gameBoard = createGrid(size);
+patrolBoat.location(gameBoard.length);
+        
+        
+        

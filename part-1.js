@@ -13,8 +13,8 @@ function createGame() {
     gameBoard = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
     hasPlayed = [];
     
-    num1 = Math.floor(Math.random() * 9);
-    num2 = Math.floor(Math.random() * 8);
+    num1 = Math.floor(Math.random() * gameBoard.length);
+    num2 = Math.floor(Math.random() * gameBoard.length - 1);
     
     boat1 = gameBoard[num1];
     gameBoard.splice(gameBoard.indexOf(boat1), 1);
