@@ -1,9 +1,8 @@
 let input = require('readline-sync');
 
-let hasPlayed = new WeakSet();
+let hasPlayed = new Set();
 let boat;
-const size = input.questionInt('how big is the grid? i.e. 10 for 10 X 10: ');
-
+let size = input.questionInt('how big is the grid? i.e. 10 for 10 X 10: ');
 
 class Ships {
     constructor(name, hits, spaces) {
@@ -115,6 +114,22 @@ class Ships {
         }while(notSet);
     }
 
+    hasHit(loc) {
+        let hit = this.shipSpaces.has(loc);
+        if(hit){
+            this.shipSpaces.delete(loc);
+            hasPlayed.add(loc);
+            console.log(`You have hit enemy ${this.name}`);
+            this.hits--;
+            if(this.hits === 0){
+                console.log(`You have sunk enemy ${this.name}`);
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 
 class Carrier extends Ships {
@@ -200,10 +215,37 @@ let fleet = generateBoats(size);
 fleet.forEach(boat => boat.setShips());
 gameOver = false;
 do{
-    let userInput = input.question('Please enter a target i.e A1');
+    let userInput = input.question('Please enter a target i.e A1 ');
     while(isValid(userInput) === false){
         console.log('please enter a valid location');
-        userInput = input.question('Please enter a target i.e A1');
+        userInput = input.question('Please enter a target i.e A1 ');
     }
-    
-}while(!gameOver)
+
+    let loc = userInput;
+    loc = loc.charAt(0).toUpperCase() + loc.slice(1);
+    let hasHit = fleet.filter(boat => boat.hasHit(loc)).length;
+
+    if(hasHit === 0){
+        if(hasPlayed.has(loc)){
+            console.log('You have already choose this location, Miss!');
+        }else{
+            console.log('You have missed');
+            hasPlayed.add(loc);
+        }
+    }
+
+    fleet = fleet.filter(boat => boat.hits > 0);
+
+    if(fleet.length === 0){
+        let playAgain = input.keyInYN('The game is over, Play again?');
+        if(playAgain){
+            size = input.questionInt('how big is the grid? i.e. 10 for 10 X 10: ');
+            gameBoard = createGrid(size);
+            fleet = generateBoats(size);
+            fleet.forEach(boat => boat.setShips());
+            gameOver = false;
+        }else{
+            gameOver = true;
+        }
+    }
+}while(!gameOver);
