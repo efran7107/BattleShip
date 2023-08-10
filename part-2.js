@@ -173,9 +173,7 @@ let createGrid = (size) => {
 function generateBoats(size) {
     tempArr = [];
     if(size < 3){
-        let x = Math.floor(Math.random() * gameBoard.length);
-        let y = Math.floor(Math.random() * gameBoard.length);
-        boat = gameBoard[y][x];
+        boat = new Ships('Boat', 1, 1);
         tempArr.push(boat);
     }else if(size === 3){
         let patrolBoat = new PatrolBoat();
@@ -198,12 +196,9 @@ function generateBoats(size) {
 }
 
 const isValid = (loc) => {
-    loc = loc.charAt(0).toUpperCase() + loc.slice(1);
-    let locArr = loc.split('');
-    let letter = locArr[0].charCodeAt(0) - 65;
-    if (locArr.length > 4 || (letter > gameBoard.length)) {
-        return false;
-    } else if (Number(locArr[1]) === NaN) {
+    let userInput = loc
+    userInput = loc.charAt(0).toUpperCase() + loc.slice(1);
+    if (gameBoard.filter(row => row.includes(loc)).length === 0 && hasPlayed.has(loc) === false) {
         return false;
     } else {
         return true;
