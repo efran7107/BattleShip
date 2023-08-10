@@ -158,7 +158,6 @@ class PatrolBoat extends Ships {
     }
 }
 
-
 let createGrid = (size) => {
     let grid = [];
     for (let i = 0; i < size; i++) {
@@ -191,9 +190,23 @@ function generateBoats(size) {
         let carrier = new Carrier();
         tempArr.push(patrolBoat, submarine, destroyer, battleship, carrier);
     }
-
+    
     return tempArr;
 }
+
+function generateGridLayout(size){
+    let gridLayout = '';
+    for(let i = 0; i < size; i++){
+        for(let j = 0; j < size; j++){
+            gridLayout+=(`|_${gameBoard[i][j]}_`);
+            if(j === size-1){
+                gridLayout+=(`| \n`);
+            }
+        }
+    }
+    return gridLayout;
+}
+
 
 const isValid = (loc) => {
     let userInput = loc
@@ -205,11 +218,29 @@ const isValid = (loc) => {
     }
 }
 
+const isMark = (loc) => {
+    for(let i = 0; i < gameBoard.length; i++){
+        for (let j = 0; j < gameBoard.length; j++){
+            let temp = gameBoard[i][j];
+            if(temp === loc && fleet.filter( boat => boat.shipSpaces.has(temp)).length > 0){
+                gameBoard[i][j] = 'X ';
+                break;
+            }else if (temp === loc){
+                gameBoard[i][j] = 'O ';
+                break;
+            }
+
+        }
+    }
+    
+}
+
 let gameBoard = createGrid(size);
 let fleet = generateBoats(size);
 fleet.forEach(boat => boat.setShips());
 gameOver = false;
 do{
+    console.log(generateGridLayout(size));
     let userInput = input.question('Please enter a target i.e A1 ');
     while(isValid(userInput) === false){
         console.log('please enter a valid location');
@@ -218,8 +249,12 @@ do{
 
     let loc = userInput;
     loc = loc.charAt(0).toUpperCase() + loc.slice(1);
+    isMark(loc);
+    console.clear();
+    
+    console.log(generateGridLayout(size));
+    
     let hasHit = fleet.filter(boat => boat.hasHit(loc)).length;
-
     if(hasHit === 0){
         if(hasPlayed.has(loc)){
             console.log('You have already choose this location, Miss!');
