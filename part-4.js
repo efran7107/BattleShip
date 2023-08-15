@@ -169,13 +169,13 @@ class PatrolBoat extends Ship {
 }
 
 class Player {
-    constructor(name, ships, gridSize) {
+    constructor(name,  gridSize) {
         this.name = name;
-        this.ships = ships;
         this.gridSize = gridSize;
     }
 
-    playerFleet = []
+    playerFleet = [];
+    ships = this.playerFleet.length;
 
     hasHit = new Set();
     hasPlayed = new Set();
@@ -300,15 +300,23 @@ class Player {
 }
 
 let size = input.questionInt('Please enter a grid size ie 10 for 10 x 10: ');
-
-let playerOne = new Player('Ernie', 5, size);
-let playerTwo = new Player('CPU', 5, size);
+let playerName = input.question('Please Enter a name: ');
+let numPlayers = input.questionInt('How Many Players? 1 or 2: ');
+let playerOne = new Player(playerName, 5, size);
+let playerTwo;
+if(numPlayers === 1){
+    playerTwo = new Player('CPU', size);
+}else{
+    playerName = input.question('Please Enter a name: ');
+    playerTwo = new Player(playerName, size);
+}
 playerOne.addShips();
 playerOne.setShips();
 playerTwo.addShips();
 playerTwo.setShips();
 
 let inGame = true;
+let turns = 2;
 
 do {
     console.log(playerDisplay(playerTwo.generateDisplayGrid()));
@@ -318,7 +326,7 @@ do {
         do {
             console.log('please enter a valid location! ');
             loc = input.question(`Please enter a location General ${playerOne.name}: ie A1 for A1 `);
-            valid = isValid(loc, player.generateBoard());
+            valid = isValid(loc, playerOne.generateBoard());
         } while (!valid);
     }
 
@@ -373,54 +381,76 @@ do {
     input.keyInPause('Press any key to continue...');
     console.clear();
 
-    let i = Math.floor(Math.random() * size);
-    let j = Math.floor(Math.random() * size);
+    if(numPlayers === 1 ){
+        let i = Math.floor(Math.random() * size);
+        let j = Math.floor(Math.random() * size);
 
-    let cpuLoc = String.fromCharCode(65 + i) + (j + 1);
+        let cpuLoc = String.fromCharCode(65 + i) + (j + 1);
 
-    let cpuResult = playerOne.playTarget(cpuLoc);
-    let cpuBoat = playerOne.playerFleet.filter(boat => boat.loc.has(target));
-    let cpuBoatName;
-    if (cpuBoat.length > 0) {
-        cpuBoatName = cpuBoat[0].name;
-    }
-    switch (cpuResult) {
-        case 0:
-            console.log('You have already hit this ship, Miss!');
-            break;
-        case 1:
-            console.log('You have already chose this location, Miss!');
-            break;
-        case 2:
-            console.log(`You have sunk enemy ${cpuBoatName}!`);
-            break;
-        case 3:
-            console.log(`You have hit enemy ship!`);
-            break;
-        case 4:
-            console.log('You have Missed!');
-            break;
-        default:
-            break;
-    }
-
-    if (playerOne.ships === 0) {
-        let playAgain = input.keyInYN('Do you want to play again?');
-        if (playAgain) {
-            size = input.questionInt('Please enter a grid size ie 10 for 10 x 10: ');
-            playerOne = new Player('Ernie', 5, size);
-            playerTwo = new Player('CPU', 5, size);
-            playerOne.addShips();
-            playerOne.setShips();
-            playerTwo.addShips();
-            playerTwo.setShips();
-            let inGame = true;
-            let turns = 2;
-        } else {
-            inGame = false;
+        let cpuResult = playerOne.playTarget(cpuLoc);
+    }else{
+        console.log(playerDisplay(playerOne.generateDisplayGrid()));
+        let loc = input.question(`Please enter a location General ${playerTwo.name}: ie A1 for A1 `);
+        let valid = isValid(loc, playerTwo.generateBoard());
+        if (!valid) {
+            do {
+                console.log('please enter a valid location! ');
+                loc = input.question(`Please enter a location General ${playerTwo.name}: ie A1 for A1 `);
+                valid = isValid(loc, playerTwo.generateBoard());
+            } while (!valid);
         }
-    }
 
-    console.clear();
+        const target = loc.charAt(0).toUpperCase() + loc.slice(1);
+
+        console.clear();
+
+        let result = playerOne.playTarget(target);
+        console.log(playerDisplay(playerOne.generateDisplayGrid()));
+        let boat = playerOne.playerFleet.filter(boat => boat.loc.has(target));
+        let boatName;
+        if (boat.length > 0) {
+            boatName = boat[0].name;
+        }
+        switch (result) {
+            case 0:
+                console.log('You have already hit this ship, Miss!');
+                break;
+            case 1:
+                console.log('You have already chose this location, Miss!');
+                break;
+            case 2:
+                console.log(`You have sunk enemy ship!`);
+                break;
+            case 3:
+                console.log(`You have hit enemy ${boatName}!`);
+                break;
+            case 4:
+                console.log('You have Missed!');
+                break;
+            default:
+                break;
+        }
+
+        if (playerOne.ships === 0) {
+            let playAgain = input.keyInYN('Do you want to play again?');
+            if (playAgain) {
+                size = input.questionInt('Please enter a grid size ie 10 for 10 x 10: ');
+                playerOne = new Player('Ernie', 5, size);
+                playerTwo = new Player('CPU', 5, size);
+                playerOne.addShips();
+                playerOne.setShips();
+                playerTwo.addShips();
+                playerTwo.setShips();
+                inGame = true;
+                turns = 2;
+            } else {
+                inGame = false;
+            }
+        }
+
+        input.keyInPause('Press any key to continue...');
+        console.clear();
+    }
+inGame = true;
 
 } while (inGame);
